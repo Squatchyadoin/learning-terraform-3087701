@@ -3,7 +3,7 @@ data "aws_ami" "app_ami" {
 
   filter {
     name   = "name"
-    values = [var.ami.ami_filter.name]
+    values = [var.ami_filter.name]
   }
 
   filter {
@@ -34,13 +34,14 @@ module "blog_autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "8.3.0"
   
-  name     = "${var.environment.name}-blog"
+  name = "${var.environment.name}-blog"
+
   min_size = var.asg_min_size
   max_size = var.asg_max_size
 
-  vpc_zone_identifier = module.blog_vpc.public_subnets
+  vpc_zone_identifier  = module.blog_vpc.public_subnets
   #target_group_arns   = module.blog_alb.target_group_arns
-  security_groups     = [module.blog_sg.security_group_id]
+  security_groups      = [module.blog_sg.security_group_id]
   
   image_id      = data.aws_ami.app_ami.id
   instance_type = var.instance_type
